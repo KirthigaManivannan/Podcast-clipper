@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 import re
 import tempfile
 import time
@@ -79,7 +80,19 @@ def _download_url(url: str, out_dir: Path) -> tuple[Path, str]:
         "noprogress": True,
         "ignoreerrors": False,
         "socket_timeout": 30,
+        "retries": 3,
+        "fragment_retries": 3,
     }
+    # Optional authenticated download: point COOKIES_FILE at a Netscape-style
+    # cookies.txt (e.g. exported via a browser extension). Helps with
+    # YouTube's "sign in to confirm you're not a bot" blocks on cloud IPs.
+    cookies_file = os.getenv("COOKIES_FILE", "").strip()
+    if cookies_file:
+        cp = Path(cookies_file).expanduser()
+        if cp.is_file():
+            opts["cookiefile"] = str(cp)
+        else:
+            logger.warning("COOKIES_FILE set but not found: %s", cp)
     try:
         with YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=True)

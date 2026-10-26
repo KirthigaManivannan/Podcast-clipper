@@ -105,6 +105,7 @@ summary.md                                # human-readable
 | `NUM_CLIPS`         | `5`          | Number of clips                                   |
 | `CLIP_MIN_SECONDS`  | `20`         | Minimum clip length                               |
 | `CLIP_MAX_SECONDS`  | `45`         | Maximum clip length                               |
+| `COOKIES_FILE`      | *(optional)* | Path to a Netscape `cookies.txt` for authenticated YouTube downloads (fixes cloud/IP bot-blocks) |
 
 If `OPENROUTER_API_KEY` is unset or still the placeholder, the launchers stop
 with a clear message and nothing else runs.
@@ -162,6 +163,10 @@ LLM, and asserts real mp3/SRT/mp4/summary files come out.
   logic handles it, and free inventory changes hourly — just retry later.
 - **Python 3.14/3.15** — use 3.10–3.13 (see the launchers' interpreter pick).
 
+
+- **"Sign in to confirm you're not a bot" (cloud/deployed)** — YouTube bot-blocks
+  datacenter IPs. Set `COOKIES_FILE` to a cookies.txt exported from your browser
+  (Netscape format); the app passes it to yt-dlp automatically.
 
 ## 9. Project layout
 
