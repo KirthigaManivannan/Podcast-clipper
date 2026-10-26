@@ -6,6 +6,7 @@ imageio-ffmpeg, or a system install) does the normalisation.
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import logging
 import os
@@ -83,11 +84,22 @@ def _download_url(url: str, out_dir: Path) -> tuple[Path, str]:
         "retries": 3,
         "fragment_retries": 3,
     }
-    # Optional authenticated download: point COOKIES_FILE at a Netscape-style
-    # cookies.txt (e.g. exported via a browser extension). Helps with
-    # YouTube's "sign in to confirm you're not a bot" blocks on cloud IPs.
+    # Optional authenticated download: either point COOKIES_FILE at a
+    # Netscape-style cookies.txt, or base64-encode one and put it in
+    # COOKIES_B64 (handy for platforms like Render that make file uploads
+    # awkward). Helps with YouTube's "sign in to confirm you're not a bot"
+    # blocks on cloud IPs.
     cookies_file = os.getenv("COOKIES_FILE", "").strip()
-    if cookies_file:
+    cookies_b64 = os.getenv("COOKIES_B64", "").strip()
+    if cookies_b64:
+        try:
+            decoded = base64.b64decode(cookies_b64).decode("utf-8")
+            cp = Path(tempfile.gettempdir()) / "podclip_cookies.txt"
+            cp.write_text(decoded, encoding="utf-8")
+            opts["cookiefile"] = str(cp)
+        except Exception as exc:  # noqa: BLE001 - bad base64 is a user error, not fatal
+            logger.warning("COOKIES_B64 could not be decoded (%s); ignoring", exc)
+    elif cookies_file:
         cp = Path(cookies_file).expanduser()
         if cp.is_file():
             opts["cookiefile"] = str(cp)
