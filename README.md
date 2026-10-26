@@ -162,19 +162,8 @@ LLM, and asserts real mp3/SRT/mp4/summary files come out.
   logic handles it, and free inventory changes hourly — just retry later.
 - **Python 3.14/3.15** — use 3.10–3.13 (see the launchers' interpreter pick).
 
-## 9. Known limitations
 
-- Free tier models vary in availability/quality moment to moment.
-- Whisper quality depends on audio clarity; very noisy or heavily-music-laden
-  shows clip poorly.
-- YouTube downloads can fail on regional blocks/devices; direct audio links are
-  the most reliable.
-- The captioned video needs `libx264` (bundled ffmpeg has it) — if not, PodClip
-  falls back to Pillow captions or SRT-only rather than failing.
-- The `.env` key is never shown in the app; remember to keep `.env` out of any
-  repo (a `.gitignore` is included).
-
-## 10. Project layout
+## 9. Project layout
 
 ```
 cli.py  app.py  start.bat  start.sh  .env.example  check_env.py  requirements.txt
