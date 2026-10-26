@@ -106,6 +106,7 @@ summary.md                                # human-readable
 | `CLIP_MIN_SECONDS`  | `20`         | Minimum clip length                               |
 | `CLIP_MAX_SECONDS`  | `45`         | Maximum clip length                               |
 | `COOKIES_FILE`      | *(optional)* | Path to a Netscape `cookies.txt` for authenticated YouTube downloads (fixes cloud/IP bot-blocks) |
+| `COOKIES_B64`       | *(optional)* | base64-encoded `cookies.txt` contents — use on hosts without a filesystem upload (e.g. Render; see §8) |
 
 If `OPENROUTER_API_KEY` is unset or still the placeholder, the launchers stop
 with a clear message and nothing else runs.
@@ -165,8 +166,19 @@ LLM, and asserts real mp3/SRT/mp4/summary files come out.
 
 
 - **"Sign in to confirm you're not a bot" (cloud/deployed)** — YouTube bot-blocks
-  datacenter IPs. Set `COOKIES_FILE` to a cookies.txt exported from your browser
-  (Netscape format); the app passes it to yt-dlp automatically.
+  datacenter IPs. Ship a real browser's cookies to the app and yt-dlp will pass
+  the check. Three ways, first one wins:
+  1. **`COOKIES_B64`** (best on Render — no file upload): on your laptop run
+     `python scripts/export_cookies.py --format` and paste the printed value
+     into Render's **Environment** as `COOKIES_B64`.
+  2. **`COOKIES_FILE`** — path to a Netscape `cookies.txt`, if the host has a
+     filesystem you can write to.
+  3. **Automatic (laptop only)** — `scripts/export_cookies.py` writes
+     `.config/cookies.txt` (git-ignored); PodClip picks it up with no env vars.
+     It will also try yt-dlp's browser extraction as a last resort.
+  **Cookies expire** — if the bot-check returns weeks later, re-run the export
+  and update Render's `COOKIES_B64`. Keep that value private; it's your Google
+  login.
 
 ## 9. Project layout
 

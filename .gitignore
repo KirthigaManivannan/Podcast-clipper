@@ -4,6 +4,9 @@ app.py.old
 *.old
 *.old2.py
 
+# Browser-exported cookies (personal login material — keep out of git)
+.config/cookies.txt
+
 # Python
 .venv/
 __pycache__/

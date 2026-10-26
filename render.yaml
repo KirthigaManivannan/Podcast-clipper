@@ -1,0 +1,18 @@
+# Render blueprint — see https://render.com/docs/blueprint-spec
+# Auto-deploys on every push to `main`. The cookie secret (COOKIES_B64) is
+# configured in the Render dashboard (Environment), NOT in this file, to
+# keep it out of git.
+services:
+  - type: web
+    name: podclip
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false   # set it in the dashboard; never commit the key
+      - key: COOKIES_B64
+        sync: false   # set it in the dashboard; never commit your Google login
+      - key: PORT
+        value: "10000"

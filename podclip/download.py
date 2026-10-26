@@ -6,12 +6,10 @@ imageio-ffmpeg, or a system install) does the normalisation.
 
 from __future__ import annotations
 
-import base64
 import hashlib
 import logging
 import os
 import re
-import tempfile
 import time
 import urllib.parse
 from dataclasses import dataclass, field
@@ -19,6 +17,7 @@ from pathlib import Path
 from typing import Callable
 
 from .config import CACHE_DIR
+from .cookie_jar import cookie_opts
 from .utils import ensure_dir, logger
 
 logger = logging.getLogger("podclip.download")
@@ -84,27 +83,13 @@ def _download_url(url: str, out_dir: Path) -> tuple[Path, str]:
         "retries": 3,
         "fragment_retries": 3,
     }
-    # Optional authenticated download: either point COOKIES_FILE at a
-    # Netscape-style cookies.txt, or base64-encode one and put it in
-    # COOKIES_B64 (handy for platforms like Render that make file uploads
-    # awkward). Helps with YouTube's "sign in to confirm you're not a bot"
-    # blocks on cloud IPs.
-    cookies_file = os.getenv("COOKIES_FILE", "").strip()
-    cookies_b64 = os.getenv("COOKIES_B64", "").strip()
-    if cookies_b64:
-        try:
-            decoded = base64.b64decode(cookies_b64).decode("utf-8")
-            cp = Path(tempfile.gettempdir()) / "podclip_cookies.txt"
-            cp.write_text(decoded, encoding="utf-8")
-            opts["cookiefile"] = str(cp)
-        except Exception as exc:  # noqa: BLE001 - bad base64 is a user error, not fatal
-            logger.warning("COOKIES_B64 could not be decoded (%s); ignoring", exc)
-    elif cookies_file:
-        cp = Path(cookies_file).expanduser()
-        if cp.is_file():
-            opts["cookiefile"] = str(cp)
-        else:
-            logger.warning("COOKIES_FILE set but not found: %s", cp)
+    # Optional authenticated download: COOKIES_B64 / COOKIES_FILE, or
+    # automatically the laptop's .config/cookies.txt / a browser session.
+    # Helps with YouTube's "sign in to confirm you're not a bot" blocks on
+    # cloud IPs. See podclip/cookie_jar.py for resolution rules.
+    opts_cookies = cookie_opts()
+    if opts_cookies:
+        opts.update(opts_cookies)
     try:
         with YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=True)

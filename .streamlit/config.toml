@@ -1,0 +1,6 @@
+# Minimal Streamlit server config for deployed hosts (Render, etc.).
+# The PORT comes from the environment and is passed to Streamlit via the
+# start command (see render.yaml / Procfile); these are safe defaults.
+[server]
+headless = true
+address = "0.0.0.0"
