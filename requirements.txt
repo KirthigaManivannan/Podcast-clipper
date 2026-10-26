@@ -1,0 +1,13 @@
+streamlit>=1.36
+openai>=1.40
+python-dotenv>=1.0
+yt-dlp>=2024.10.22
+faster-whisper>=1.1.0
+# faster-whisper 1.2.x calls av.open(..., metadata_errors="ignore"), which
+# av 19.x removed -> pin <19 so transcription keeps working.
+av<19
+huggingface-hub<1   # faster-whisper 1.2.x breaks on hf_hub 2.x (metadata_errors)
+imageio-ffmpeg>=0.5.0
+Pillow>=10.3.0
+requests>=2.32
+pytest>=8.0

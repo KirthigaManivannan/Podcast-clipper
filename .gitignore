@@ -1,0 +1,16 @@
+# Secret backups / editor backups
+.env
+app.py.old
+*.old
+*.old2.py
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# PodClip runtime artifacts
+outputs/
+.cache/
+.smoke/
