@@ -2,7 +2,9 @@
 
 Turn a podcast (a local file **or** a YouTube/direct URL) into the **5 most
 quotable moments**, delivered as short vertical clips with burned-in captions —
-automatically.
+automatically. Wrapped in a hand-crafted scrapbook UI: ransom-note
+letter-tiles for the wordmark, a vinyl + microphone podcast backdrop, and
+taped paper cards for each clip (no gradients, no glass, no AI-slop).
 
 No model IDs are hardcoded: PodClip hits the **OpenRouter catalog**, picks the
 best **free** models available right now (preferring qwen/deepseek/llama/gemma/
@@ -58,12 +60,14 @@ That's the **only** thing you ever edit by hand.
 ## 3. Use it
 
 ### The web app (default)
-After `start.bat` / `./start.sh` you'll get a Streamlit page:
+After `start.bat` / `./start.sh` you'll get a Streamlit page — a warm-paper,
+scrapbook-style UI with a ransom-note "PodClip" wordmark, a vinyl/microphone
+podcast backdrop, and taped paper cards for every clip:
 
-- **📁 Upload a file** — mp3, wav, m4a, mp4, …
-- **🔗 Paste a URL** — YouTube or a direct audio link
-- Hit **🎬 Make clips**, watch the progress bar, then play/download each clip
-  or grab the zip with everything.
+- **Upload a file** — mp3, wav, m4a, mp4, …
+- **Paste a URL** — YouTube or a direct audio link
+- Hit **Find clips** (coral button), watch the progress bar, then play or
+  download each clip, or grab the zip with everything.
 
 ### The CLI
 
